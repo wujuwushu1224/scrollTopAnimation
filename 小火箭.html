@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .bg {
+            background: url('blog7year_videobg.png');
+            height: 2000px;
+        }
+
+        /* 
+        原生js版本所需要的的样式
+         */
+        .rocket {
+            position: fixed;
+            right: 30px;
+            bottom: 40px;
+            transition: all .5s ease-in;
+            opacity: 1;
+        }
+
+        /* 
+            jquery版本所需要的的样式
+         */
+        /* .rocket {
+            position: fixed;
+            right: 30px;
+            bottom: 40px;
+        } */
+
+        .rocket a {
+            width: 150px;
+            height: 195px;
+            display: inline-block;
+            background: url("./rocket.png") no-repeat;
+        }
+
+        .rocket a:hover {
+            background: url("./recketGIF.gif") no-repeat;
+        }
+
+        .hide {
+            opacity: 0;
+        }
+
+        .show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg">
+        <div class="rocket">
+            <a href="javascript:;"></a>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        (function () {
+            // const ScrollTop = (number = 0, time) => {
+            //     if (!time) {
+            //         document.body.scrollTop = document.documentElement.scrollTop = number;
+            //         return number;
+            //     }
+            //     const spacingTime = 20; // 设置循环的间隔时间  值越小消耗性能越高
+            //     let spacingInex = time / spacingTime; // 计算循环的次数
+            //     let nowTop = document.body.scrollTop + document.documentElement.scrollTop; // 获取当前滚动条位置
+            //     let everTop = (number - nowTop) / spacingInex; // 计算每次滑动的距离
+            //     let scrollTimer = setInterval(() => {
+            //         if (spacingInex > 0) {
+            //             spacingInex--;
+            //             ScrollTop(nowTop += everTop);
+            //         } else {
+            //             clearInterval(scrollTimer); // 清除计时器
+            //         }
+            //     }, spacingTime);
+            // };
+
+            /*
+                原生JS方式
+                思路：把动画执行时间分片，这就是动画帧。主要利用定时器setInterval，进行执行每个时间段的动作。
+            */
+            function ScrollTop(number = 0, time) {
+                if (!time) {
+                    document.body.scrollTop = document.documentElement.scrollTop = number;
+                    return number;
+                }
+                const spacingTime = 20; // 设置每一帧的间隔时间
+                let spacingInex = time / spacingTime; // 计算帧数，帧数越小动画越流畅，但是消耗也越大。
+                let nowTop = document.body.scrollTop + document.documentElement.scrollTop; // 获取当前滚动条位置
+                let everTop = (number - nowTop) / spacingInex; // 计算每次滑动的距离
+                console.log(everTop)
+                let scrollTime = setInterval(() => {
+                    // 利用闭包的原理，执行每一帧的定时器方法
+                    if (spacingInex > 0) {
+                        spacingInex--
+                        ScrollTop(nowTop += everTop);
+                    } else {
+                        clearInterval(scrollTime)
+                    }
+
+                }, spacingTime)
+            }
+            var rocketUp = document.getElementsByClassName("rocket")[0];
+            rocketUp.onclick = function () {
+                rocketUp.classList.remove("show")
+                ScrollTop(0, 600)
+            }
+            document.addEventListener('scroll', function () {
+                var scrollTop = document.documentElement.scrollTop
+                if (scrollTop == 0) {
+                    rocketUp.classList.add("hide")
+                    rocketUp.classList.remove("show")
+                } else {
+                    rocketUp.classList.add("show")
+                    rocketUp.classList.remove("hide")
+                }
+            })
+
+
+        })()
+
+        /*
+            jQeruy方式
+        */
+        // $(function () {
+        //     $(window).scroll(function () {
+        //         if ($(window).scrollTop() >= 100) {
+        //             $('.rocket').fadeIn(300);
+        //         } else {
+        //             $('.rocket').fadeOut(300);
+        //         }
+        //     });
+        //     $('.rocket').click(function () {
+        //         $('html,body').animate({ scrollTop: '0px' }, 800);
+        //     });
+        // });
+    </script>
+</body>
+
+</html>
